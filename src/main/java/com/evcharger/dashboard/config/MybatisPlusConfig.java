@@ -11,9 +11,12 @@ public class MybatisPlusConfig {
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
+//        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+//        PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
+//        interceptor.addInnerInterceptor(paginationInnerInterceptor);
+//        return interceptor;
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor(DbType.MYSQL);
-        interceptor.addInnerInterceptor(paginationInnerInterceptor);
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         return interceptor;
     }
 }
