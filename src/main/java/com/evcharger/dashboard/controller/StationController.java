@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.evcharger.dashboard.entity.Connector;
 import com.evcharger.dashboard.entity.Station;
+import com.evcharger.dashboard.entity.StationDetailDTO;
 import com.evcharger.dashboard.entity.StationSiteDTO;
 import com.evcharger.dashboard.service.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8081")
 @RequestMapping("/stations")
 public class StationController {
 
@@ -48,4 +50,21 @@ public class StationController {
         Page<StationSiteDTO> pagination = new Page<>(page, size);
         return stationService.getStationsWithSite(pagination);
     }
+
+    @GetMapping("/filtered")
+    public IPage<StationSiteDTO> getFilteredStations(@RequestParam("page") int page,
+                                                     @RequestParam("size") int size,
+                                                     @RequestParam(value = "stationName", required = false) String stationName,
+                                                     @RequestParam(value = "city", required = false) String city,
+                                                     @RequestParam(value = "postcode", required = false) String postcode,
+                                                     @RequestParam(value = "supportsFastCharging", required = false) Boolean supportsFastCharging) {
+        Page<StationSiteDTO> pagination = new Page<>(page, size);
+        return stationService.getStationsWithFilters(pagination, stationName, city, postcode, supportsFastCharging);
+    }
+
+    @GetMapping("/{stationName}")
+    public StationDetailDTO getStationDetails(@PathVariable("stationName") String stationName) {
+        return stationService.getStationDetails(stationName);
+    }
+
 }
