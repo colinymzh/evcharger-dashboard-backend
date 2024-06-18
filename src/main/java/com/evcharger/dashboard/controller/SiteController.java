@@ -34,4 +34,10 @@ public class SiteController {
     public boolean deleteSite(@PathVariable("id") String id) {
         return siteService.removeById(id);
     }
+
+
+    @GetMapping("/cities")
+    public List<String> getAllUniqueCities() {
+        return siteService.getAllUniqueCities();
+    }
 }

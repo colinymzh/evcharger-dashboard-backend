@@ -6,6 +6,13 @@ import com.evcharger.dashboard.mapper.SiteMapper;
 import com.evcharger.dashboard.service.SiteService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SiteServiceImpl extends ServiceImpl<SiteMapper, Site> implements SiteService {
+
+    @Override
+    public List<String> getAllUniqueCities() {
+        return baseMapper.getAllUniqueCities();
+    }
 }
