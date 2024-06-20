@@ -9,6 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface SiteMapper extends BaseMapper<Site> {
-    @Select("SELECT DISTINCT city FROM site")
-    List<String> getAllUniqueCities();
+
+    @Select("SELECT DISTINCT city_id FROM site")
+    List<String> getAllUniqueCityIds();
 }

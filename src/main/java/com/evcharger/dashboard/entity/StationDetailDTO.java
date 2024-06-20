@@ -11,7 +11,8 @@ public class StationDetailDTO {
     private Double tariffAmount;
     private String tariffDescription;
     private Double tariffConnectionfee;
-    private String city;
+    private String cityName;
+    private String cityId;
     private String street;
     private String postcode;
     private List<ConnectorDTO> connectors;

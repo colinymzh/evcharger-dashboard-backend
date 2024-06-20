@@ -11,8 +11,13 @@ import java.util.List;
 @Service
 public class SiteServiceImpl extends ServiceImpl<SiteMapper, Site> implements SiteService {
 
+//    @Override
+//    public List<String> getAllUniqueCities() {
+//        return baseMapper.getAllUniqueCityIds();
+//    }
+
     @Override
-    public List<String> getAllUniqueCities() {
-        return baseMapper.getAllUniqueCities();
+    public List<String> getAllUniqueCityIds() {
+        return baseMapper.getAllUniqueCityIds();
     }
 }

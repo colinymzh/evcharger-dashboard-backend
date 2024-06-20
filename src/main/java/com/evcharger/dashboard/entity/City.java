@@ -5,13 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
-@TableName("site")
-public class Site {
+@TableName("city")
+public class City {
     @TableId
-    private String siteId;
-    private String street;
-    private String postcode;
-    private Double coordinatesX;
-    private Double coordinatesY;
     private String cityId;
+    private String cityName;
 }

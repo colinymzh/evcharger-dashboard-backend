@@ -7,6 +7,7 @@ import com.evcharger.dashboard.entity.ConnectorDTO;
 import com.evcharger.dashboard.entity.Station;
 import com.evcharger.dashboard.entity.StationDetailDTO;
 import com.evcharger.dashboard.entity.StationSiteDTO;
+import com.evcharger.dashboard.mapper.CityMapper;
 import com.evcharger.dashboard.mapper.ConnectorMapper;
 import com.evcharger.dashboard.mapper.StationMapper;
 import com.evcharger.dashboard.service.StationService;
@@ -23,6 +24,11 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> impl
         return baseMapper.selectStationWithSite(page);
     }
 
+//    @Override
+//    public IPage<StationSiteDTO> getStationsWithFilters(Page<?> page, String stationName, String city, String postcode, Boolean supportsFastCharging) {
+//        return baseMapper.selectStationWithFilters(page, stationName, city, postcode, supportsFastCharging);
+//    }
+
     @Override
     public IPage<StationSiteDTO> getStationsWithFilters(Page<?> page, String stationName, String city, String postcode, Boolean supportsFastCharging) {
         return baseMapper.selectStationWithFilters(page, stationName, city, postcode, supportsFastCharging);
@@ -31,12 +37,28 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> impl
     @Autowired
     private ConnectorMapper connectorMapper;
 
+//    @Override
+//    public StationDetailDTO getStationDetails(String stationName) {
+//        StationDetailDTO stationDetail = baseMapper.getStationDetails(stationName);
+//        if (stationDetail != null) {
+//            List<ConnectorDTO> connectors = connectorMapper.getConnectorsByStationName(stationName);
+//            stationDetail.setConnectors(connectors);
+//        }
+//        return stationDetail;
+//    }
+
+
+    @Autowired
+    private CityMapper cityMapper;
+
     @Override
     public StationDetailDTO getStationDetails(String stationName) {
         StationDetailDTO stationDetail = baseMapper.getStationDetails(stationName);
         if (stationDetail != null) {
             List<ConnectorDTO> connectors = connectorMapper.getConnectorsByStationName(stationName);
             stationDetail.setConnectors(connectors);
+            String cityName = cityMapper.getCityNameById(stationDetail.getCityId());
+            stationDetail.setCityName(cityName);
         }
         return stationDetail;
     }

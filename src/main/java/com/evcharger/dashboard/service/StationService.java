@@ -10,6 +10,9 @@ public interface StationService extends IService<Station> {
 
     IPage<StationSiteDTO> getStationsWithSite(Page<?> page);
 
+//    IPage<StationSiteDTO> getStationsWithFilters(Page<?> page, String stationName, String city, String postcode, Boolean supportsFastCharging);
+
+//    StationDetailDTO getStationDetails(String stationName);
     IPage<StationSiteDTO> getStationsWithFilters(Page<?> page, String stationName, String city, String postcode, Boolean supportsFastCharging);
 
     StationDetailDTO getStationDetails(String stationName);

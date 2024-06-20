@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface SiteService extends IService<Site> {
 
-    List<String> getAllUniqueCities();
+    //List<String> getAllUniqueCities();
+
+    List<String> getAllUniqueCityIds();
 }

@@ -5,7 +5,8 @@ import lombok.Data;
 @Data
 public class StationSiteDTO {
     private String stationName;
-    private String city;
+    private String cityId;
+    private String cityName;
     private String street;
     private String postcode;
 }

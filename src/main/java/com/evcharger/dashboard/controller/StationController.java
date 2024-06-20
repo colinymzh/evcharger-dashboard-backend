@@ -51,16 +51,26 @@ public class StationController {
         return stationService.getStationsWithSite(pagination);
     }
 
-    @GetMapping("/filtered")
-    public IPage<StationSiteDTO> getFilteredStations(@RequestParam("page") int page,
-                                                     @RequestParam("size") int size,
-                                                     @RequestParam(value = "stationName", required = false) String stationName,
-                                                     @RequestParam(value = "city", required = false) String city,
-                                                     @RequestParam(value = "postcode", required = false) String postcode,
-                                                     @RequestParam(value = "supportsFastCharging", required = false) Boolean supportsFastCharging) {
-        Page<StationSiteDTO> pagination = new Page<>(page, size);
-        return stationService.getStationsWithFilters(pagination, stationName, city, postcode, supportsFastCharging);
-    }
+//    @GetMapping("/filtered")
+//    public IPage<StationSiteDTO> getFilteredStations(@RequestParam("page") int page,
+//                                                     @RequestParam("size") int size,
+//                                                     @RequestParam(value = "stationName", required = false) String stationName,
+//                                                     @RequestParam(value = "city", required = false) String city,
+//                                                     @RequestParam(value = "postcode", required = false) String postcode,
+//                                                     @RequestParam(value = "supportsFastCharging", required = false) Boolean supportsFastCharging) {
+//        Page<StationSiteDTO> pagination = new Page<>(page, size);
+//        return stationService.getStationsWithFilters(pagination, stationName, city, postcode, supportsFastCharging);
+//    }
+@GetMapping("/filtered")
+public IPage<StationSiteDTO> getFilteredStations(@RequestParam("page") int page,
+                                                 @RequestParam("size") int size,
+                                                 @RequestParam(value = "stationName", required = false) String stationName,
+                                                 @RequestParam(value = "city", required = false) String city,
+                                                 @RequestParam(value = "postcode", required = false) String postcode,
+                                                 @RequestParam(value = "supportsFastCharging", required = false) Boolean supportsFastCharging) {
+    Page<StationSiteDTO> pagination = new Page<>(page, size);
+    return stationService.getStationsWithFilters(pagination, stationName, city, postcode, supportsFastCharging);
+}
 
     @GetMapping("/{stationName}")
     public StationDetailDTO getStationDetails(@PathVariable("stationName") String stationName) {
