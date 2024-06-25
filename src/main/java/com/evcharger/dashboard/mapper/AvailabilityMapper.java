@@ -13,4 +13,8 @@ public interface AvailabilityMapper extends BaseMapper<Availability> {
 
     @Select("SELECT * FROM availability WHERE station_name = #{stationName} AND date = #{date}")
     List<Availability> getAvailabilityByStationAndDate(@Param("stationName") String stationName, @Param("date") String date);
+
+    @Select("SELECT * FROM availability WHERE station_name = #{stationName} AND date >= (SELECT MAX(date) - INTERVAL #{scope} DAY FROM availability) ORDER BY date, hour")
+    List<Availability> getAvailabilityByStationAndScope(@Param("stationName") String stationName, @Param("scope") int scope);
+
 }
