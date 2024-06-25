@@ -36,7 +36,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
             List<ConnectorUsageDTO> usageData = new ArrayList<>();
             hourMap.forEach((hour, records) -> {
                 long availableCount = records.stream().filter(Availability::getIsAvailable).count();
-                double averageUsage = (double) availableCount / records.size();
+                double averageUsage = 1 - (double) availableCount / records.size();
                 ConnectorUsageDTO usageDTO = new ConnectorUsageDTO();
                 usageDTO.setHour(hour);
                 usageDTO.setAverageUsage(averageUsage);
