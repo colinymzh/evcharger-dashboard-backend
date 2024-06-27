@@ -5,15 +5,15 @@ import com.evcharger.dashboard.entity.Availability;
 import com.evcharger.dashboard.entity.dto.ConnectorUsageDTO;
 import com.evcharger.dashboard.entity.dto.ConnectorUsageResponseDTO;
 import com.evcharger.dashboard.entity.dto.TimePeriodUsageDTO;
+import com.evcharger.dashboard.entity.dto.WeeklyUsageDTO;
 import com.evcharger.dashboard.mapper.AvailabilityMapper;
 import com.evcharger.dashboard.service.AvailabilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +26,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
         return baseMapper.getAvailabilityByStationAndDate(stationName, date);
     }
 
+    //时间点、可用性、折线图
     @Override
     public List<ConnectorUsageResponseDTO> getConnectorUsageByStationAndScope(String stationName, int scope) {
         List<Availability> availabilities = availabilityMapper.getAvailabilityByStationAndScope(stationName, scope);
@@ -53,6 +54,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
         return response;
     }
 
+    //时间段、可用性、折线图
     @Override
     public List<ConnectorUsageResponseDTO> getConnectorUsageByTimePeriod(String stationName, int scope) {
         List<Availability> availabilities = availabilityMapper.getAvailabilityByStationAndScope(stationName, scope);
@@ -107,6 +109,44 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
             return "17-20";
         } else {
             return "21-23";
+        }
+    }
+
+
+    @Override
+    public List<WeeklyUsageDTO> getWeeklyUsageByStation(String stationName) {
+        List<Availability> availabilities = availabilityMapper.getAvailabilityByStationName(stationName);
+
+        Map<DayOfWeek, List<Availability>> groupedByDayOfWeek = availabilities.stream()
+                .collect(Collectors.groupingBy(a -> LocalDate.parse(a.getDate()).getDayOfWeek()));
+
+        List<WeeklyUsageDTO> response = new ArrayList<>();
+
+        groupedByDayOfWeek.forEach((dayOfWeek, records) -> {
+            long totalCount = records.size();
+            long unavailableCount = records.stream().filter(a -> !a.getIsAvailable()).count();
+            double averageUsage = (double) unavailableCount / totalCount;
+            WeeklyUsageDTO usageDTO = new WeeklyUsageDTO();
+            usageDTO.setDayOfWeek(dayOfWeek.toString());
+            usageDTO.setAverageUsage(averageUsage);
+            response.add(usageDTO);
+        });
+
+        return response.stream()
+                .sorted(Comparator.comparingInt(this::getDayOfWeekOrder))
+                .collect(Collectors.toList());
+    }
+
+    private int getDayOfWeekOrder(WeeklyUsageDTO dto) {
+        switch (dto.getDayOfWeek()) {
+            case "MONDAY": return 1;
+            case "TUESDAY": return 2;
+            case "WEDNESDAY": return 3;
+            case "THURSDAY": return 4;
+            case "FRIDAY": return 5;
+            case "SATURDAY": return 6;
+            case "SUNDAY": return 7;
+            default: return 0;
         }
     }
 
