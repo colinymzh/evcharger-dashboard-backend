@@ -28,4 +28,10 @@ public class AvailabilityController {
         return availabilityService.getConnectorUsageByStationAndScope(stationName, scope);
     }
 
+    @GetMapping("/station/usage/time-period")
+    public List<ConnectorUsageResponseDTO> getConnectorUsageByTimePeriod(@RequestParam("stationName") String stationName,
+                                                                         @RequestParam("scope") int scope) {
+        return availabilityService.getConnectorUsageByTimePeriod(stationName, scope);
+    }
+
 }
