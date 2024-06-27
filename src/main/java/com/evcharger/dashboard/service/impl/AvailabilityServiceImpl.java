@@ -156,4 +156,48 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
     }
 
 
+    @Override
+    public CityUsageResponseDTO getWeeklyUsageByCity(String stationName) {
+        Integer cityId = availabilityMapper.getCityIdByStationName(stationName);
+        List<Availability> availabilities = availabilityMapper.getAvailabilityByCityId(cityId);
+        String cityName = availabilityMapper.getCityNameByCityId(cityId);
+
+        Map<DayOfWeek, List<Availability>> groupedByDayOfWeek = availabilities.stream()
+                .collect(Collectors.groupingBy(a -> LocalDate.parse(a.getDate()).getDayOfWeek()));
+
+        List<WeeklyCityUsageDTO> weeklyUsage = new ArrayList<>();
+
+        groupedByDayOfWeek.forEach((dayOfWeek, records) -> {
+            long totalCount = records.size();
+            long unavailableCount = records.stream().filter(a -> !a.getIsAvailable()).count();
+            double averageUsage = (double) unavailableCount / totalCount;
+            WeeklyCityUsageDTO usageDTO = new WeeklyCityUsageDTO();
+            usageDTO.setDayOfWeek(dayOfWeek.toString());
+            usageDTO.setAverageUsage(averageUsage);
+            weeklyUsage.add(usageDTO);
+        });
+
+        CityUsageResponseDTO responseDTO = new CityUsageResponseDTO();
+        responseDTO.setCityName(cityName);
+        responseDTO.setWeeklyUsage(weeklyUsage.stream()
+                .sorted(Comparator.comparingInt(this::getDayOfWeekOrder))
+                .collect(Collectors.toList()));
+
+        return responseDTO;
+    }
+
+    private int getDayOfWeekOrder(WeeklyCityUsageDTO dto) {
+        switch (dto.getDayOfWeek()) {
+            case "MONDAY": return 1;
+            case "TUESDAY": return 2;
+            case "WEDNESDAY": return 3;
+            case "THURSDAY": return 4;
+            case "FRIDAY": return 5;
+            case "SATURDAY": return 6;
+            case "SUNDAY": return 7;
+            default: return 0;
+        }
+    }
+
+
 }

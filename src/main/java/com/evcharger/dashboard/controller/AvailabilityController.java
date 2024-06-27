@@ -1,6 +1,7 @@
 package com.evcharger.dashboard.controller;
 
 import com.evcharger.dashboard.entity.Availability;
+import com.evcharger.dashboard.entity.dto.CityUsageResponseDTO;
 import com.evcharger.dashboard.entity.dto.ConnectorUsageResponseDTO;
 import com.evcharger.dashboard.entity.dto.ConnectorWeeklyUsageResponseDTO;
 import com.evcharger.dashboard.entity.dto.WeeklyUsageDTO;
@@ -43,5 +44,10 @@ public class AvailabilityController {
     @GetMapping("/station/weekly-usage")
     public List<ConnectorWeeklyUsageResponseDTO> getWeeklyUsageByStationAndConnector(@RequestParam("stationName") String stationName) {
         return availabilityService.getWeeklyUsageByStationAndConnector(stationName);
+    }
+
+    @GetMapping("/city/weekly-usage")
+    public CityUsageResponseDTO getWeeklyUsageByCity(@RequestParam("stationName") String stationName) {
+        return availabilityService.getWeeklyUsageByCity(stationName);
     }
 }
