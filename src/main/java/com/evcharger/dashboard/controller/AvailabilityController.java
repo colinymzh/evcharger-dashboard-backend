@@ -49,7 +49,7 @@ public class AvailabilityController {
     }
 
     @GetMapping("/station/weekly-hourly-usage")
-    public List<WeeklyHourlyUsageDTO> getWeeklyHourlyUsageByStation(@RequestParam("stationName") String stationName) {
-        return availabilityService.getWeeklyHourlyUsageByStation(stationName);
+    public List<ConnectorWeeklyHourlyUsageDTO> getWeeklyHourlyUsageByStationAndConnector(@RequestParam("stationName") String stationName) {
+        return availabilityService.getWeeklyHourlyUsageByStationAndConnector(stationName);
     }
 }

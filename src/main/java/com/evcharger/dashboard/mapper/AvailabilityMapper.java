@@ -30,5 +30,4 @@ public interface AvailabilityMapper extends BaseMapper<Availability> {
     String getCityNameByCityId(@Param("cityId") Integer cityId);
 
 
-
 }

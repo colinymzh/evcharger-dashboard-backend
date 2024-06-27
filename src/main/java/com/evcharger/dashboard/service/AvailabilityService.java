@@ -19,6 +19,7 @@ public interface AvailabilityService extends IService<Availability> {
 
     CityUsageResponseDTO getWeeklyUsageByCity(String stationName);
 
-    List<WeeklyHourlyUsageDTO> getWeeklyHourlyUsageByStation(String stationName);
+
+    List<ConnectorWeeklyHourlyUsageDTO> getWeeklyHourlyUsageByStationAndConnector(String stationName);
 
 }
