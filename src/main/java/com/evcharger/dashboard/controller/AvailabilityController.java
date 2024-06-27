@@ -2,6 +2,7 @@ package com.evcharger.dashboard.controller;
 
 import com.evcharger.dashboard.entity.Availability;
 import com.evcharger.dashboard.entity.dto.ConnectorUsageResponseDTO;
+import com.evcharger.dashboard.entity.dto.ConnectorWeeklyUsageResponseDTO;
 import com.evcharger.dashboard.entity.dto.WeeklyUsageDTO;
 import com.evcharger.dashboard.service.AvailabilityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,9 @@ public class AvailabilityController {
     }
 
     //星期几、使用率、条形图
+
     @GetMapping("/station/weekly-usage")
-    public List<WeeklyUsageDTO> getWeeklyUsageByStation(@RequestParam("stationName") String stationName) {
-        return availabilityService.getWeeklyUsageByStation(stationName);
+    public List<ConnectorWeeklyUsageResponseDTO> getWeeklyUsageByStationAndConnector(@RequestParam("stationName") String stationName) {
+        return availabilityService.getWeeklyUsageByStationAndConnector(stationName);
     }
 }

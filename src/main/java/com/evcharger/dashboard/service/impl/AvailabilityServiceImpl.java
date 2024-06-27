@@ -2,10 +2,7 @@ package com.evcharger.dashboard.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.evcharger.dashboard.entity.Availability;
-import com.evcharger.dashboard.entity.dto.ConnectorUsageDTO;
-import com.evcharger.dashboard.entity.dto.ConnectorUsageResponseDTO;
-import com.evcharger.dashboard.entity.dto.TimePeriodUsageDTO;
-import com.evcharger.dashboard.entity.dto.WeeklyUsageDTO;
+import com.evcharger.dashboard.entity.dto.*;
 import com.evcharger.dashboard.mapper.AvailabilityMapper;
 import com.evcharger.dashboard.service.AvailabilityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,27 +111,35 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
 
 
     @Override
-    public List<WeeklyUsageDTO> getWeeklyUsageByStation(String stationName) {
+    public List<ConnectorWeeklyUsageResponseDTO> getWeeklyUsageByStationAndConnector(String stationName) {
         List<Availability> availabilities = availabilityMapper.getAvailabilityByStationName(stationName);
 
-        Map<DayOfWeek, List<Availability>> groupedByDayOfWeek = availabilities.stream()
-                .collect(Collectors.groupingBy(a -> LocalDate.parse(a.getDate()).getDayOfWeek()));
+        Map<String, Map<DayOfWeek, List<Availability>>> groupedByConnectorAndDayOfWeek = availabilities.stream()
+                .collect(Collectors.groupingBy(a -> String.valueOf(a.getConnectorId()),
+                        Collectors.groupingBy(a -> LocalDate.parse(a.getDate()).getDayOfWeek())));
 
-        List<WeeklyUsageDTO> response = new ArrayList<>();
+        List<ConnectorWeeklyUsageResponseDTO> response = new ArrayList<>();
 
-        groupedByDayOfWeek.forEach((dayOfWeek, records) -> {
-            long totalCount = records.size();
-            long unavailableCount = records.stream().filter(a -> !a.getIsAvailable()).count();
-            double averageUsage = (double) unavailableCount / totalCount;
-            WeeklyUsageDTO usageDTO = new WeeklyUsageDTO();
-            usageDTO.setDayOfWeek(dayOfWeek.toString());
-            usageDTO.setAverageUsage(averageUsage);
-            response.add(usageDTO);
+        groupedByConnectorAndDayOfWeek.forEach((connectorId, dayOfWeekMap) -> {
+            List<WeeklyUsageDTO> weeklyUsage = new ArrayList<>();
+            dayOfWeekMap.forEach((dayOfWeek, records) -> {
+                long totalCount = records.size();
+                long unavailableCount = records.stream().filter(a -> !a.getIsAvailable()).count();
+                double averageUsage = (double) unavailableCount / totalCount;
+                WeeklyUsageDTO usageDTO = new WeeklyUsageDTO();
+                usageDTO.setDayOfWeek(dayOfWeek.toString());
+                usageDTO.setAverageUsage(averageUsage);
+                weeklyUsage.add(usageDTO);
+            });
+            ConnectorWeeklyUsageResponseDTO responseDTO = new ConnectorWeeklyUsageResponseDTO();
+            responseDTO.setConnectorId(connectorId);
+            responseDTO.setWeeklyUsage(weeklyUsage.stream()
+                    .sorted(Comparator.comparingInt(this::getDayOfWeekOrder))
+                    .collect(Collectors.toList()));
+            response.add(responseDTO);
         });
 
-        return response.stream()
-                .sorted(Comparator.comparingInt(this::getDayOfWeekOrder))
-                .collect(Collectors.toList());
+        return response;
     }
 
     private int getDayOfWeekOrder(WeeklyUsageDTO dto) {
