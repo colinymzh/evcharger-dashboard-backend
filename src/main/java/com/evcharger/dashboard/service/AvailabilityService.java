@@ -2,10 +2,7 @@ package com.evcharger.dashboard.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.evcharger.dashboard.entity.Availability;
-import com.evcharger.dashboard.entity.dto.CityUsageResponseDTO;
-import com.evcharger.dashboard.entity.dto.ConnectorUsageResponseDTO;
-import com.evcharger.dashboard.entity.dto.ConnectorWeeklyUsageResponseDTO;
-import com.evcharger.dashboard.entity.dto.WeeklyUsageDTO;
+import com.evcharger.dashboard.entity.dto.*;
 
 import java.util.List;
 
@@ -21,5 +18,7 @@ public interface AvailabilityService extends IService<Availability> {
     List<ConnectorWeeklyUsageResponseDTO> getWeeklyUsageByStationAndConnector(String stationName);
 
     CityUsageResponseDTO getWeeklyUsageByCity(String stationName);
+
+    List<WeeklyHourlyUsageDTO> getWeeklyHourlyUsageByStation(String stationName);
 
 }

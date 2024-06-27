@@ -1,10 +1,7 @@
 package com.evcharger.dashboard.controller;
 
 import com.evcharger.dashboard.entity.Availability;
-import com.evcharger.dashboard.entity.dto.CityUsageResponseDTO;
-import com.evcharger.dashboard.entity.dto.ConnectorUsageResponseDTO;
-import com.evcharger.dashboard.entity.dto.ConnectorWeeklyUsageResponseDTO;
-import com.evcharger.dashboard.entity.dto.WeeklyUsageDTO;
+import com.evcharger.dashboard.entity.dto.*;
 import com.evcharger.dashboard.service.AvailabilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -49,5 +46,10 @@ public class AvailabilityController {
     @GetMapping("/city/weekly-usage")
     public CityUsageResponseDTO getWeeklyUsageByCity(@RequestParam("stationName") String stationName) {
         return availabilityService.getWeeklyUsageByCity(stationName);
+    }
+
+    @GetMapping("/station/weekly-hourly-usage")
+    public List<WeeklyHourlyUsageDTO> getWeeklyHourlyUsageByStation(@RequestParam("stationName") String stationName) {
+        return availabilityService.getWeeklyHourlyUsageByStation(stationName);
     }
 }

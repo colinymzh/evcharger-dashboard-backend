@@ -31,5 +31,4 @@ public interface AvailabilityMapper extends BaseMapper<Availability> {
 
 
 
-
 }

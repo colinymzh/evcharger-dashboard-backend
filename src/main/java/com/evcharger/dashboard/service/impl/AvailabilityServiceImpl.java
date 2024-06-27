@@ -155,7 +155,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
         }
     }
 
-
+    //星期、城市、柱状图
     @Override
     public CityUsageResponseDTO getWeeklyUsageByCity(String stationName) {
         Integer cityId = availabilityMapper.getCityIdByStationName(stationName);
@@ -199,5 +199,55 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
         }
     }
 
+
+    //时间点、星期数、热度图
+    @Override
+    public List<WeeklyHourlyUsageDTO> getWeeklyHourlyUsageByStation(String stationName) {
+        List<Availability> availabilities = availabilityMapper.getAvailabilityByStationName(stationName);
+
+        Map<DayOfWeek, Map<Integer, List<Availability>>> groupedByDayOfWeekAndHour = availabilities.stream()
+                .collect(Collectors.groupingBy(
+                        a -> LocalDate.parse(a.getDate()).getDayOfWeek(),
+                        Collectors.groupingBy(Availability::getHour)
+                ));
+
+        List<WeeklyHourlyUsageDTO> response = new ArrayList<>();
+
+        groupedByDayOfWeekAndHour.forEach((dayOfWeek, hourMap) -> {
+            List<HourlyUsageDTO> hourlyUsageList = new ArrayList<>();
+            hourMap.forEach((hour, records) -> {
+                long totalCount = records.size();
+                long unavailableCount = records.stream().filter(a -> !a.getIsAvailable()).count();
+                double averageUsage = (double) unavailableCount / totalCount;
+                HourlyUsageDTO hourlyUsageDTO = new HourlyUsageDTO();
+                hourlyUsageDTO.setHour(hour);
+                hourlyUsageDTO.setAverageUsage(averageUsage);
+                hourlyUsageList.add(hourlyUsageDTO);
+            });
+            WeeklyHourlyUsageDTO weeklyHourlyUsageDTO = new WeeklyHourlyUsageDTO();
+            weeklyHourlyUsageDTO.setDayOfWeek(dayOfWeek.toString());
+            weeklyHourlyUsageDTO.setHourlyUsage(hourlyUsageList.stream()
+                    .sorted(Comparator.comparingInt(HourlyUsageDTO::getHour))
+                    .collect(Collectors.toList()));
+            response.add(weeklyHourlyUsageDTO);
+        });
+
+        return response.stream()
+                .sorted(Comparator.comparingInt(this::getDayOfWeekOrder))
+                .collect(Collectors.toList());
+    }
+
+    private int getDayOfWeekOrder(WeeklyHourlyUsageDTO dto) {
+        switch (dto.getDayOfWeek()) {
+            case "MONDAY": return 1;
+            case "TUESDAY": return 2;
+            case "WEDNESDAY": return 3;
+            case "THURSDAY": return 4;
+            case "FRIDAY": return 5;
+            case "SATURDAY": return 6;
+            case "SUNDAY": return 7;
+            default: return 0;
+        }
+    }
 
 }
