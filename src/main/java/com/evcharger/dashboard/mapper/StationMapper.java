@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.evcharger.dashboard.entity.Station;
 import com.evcharger.dashboard.entity.StationDetailDTO;
+import com.evcharger.dashboard.entity.StationLocation;
 import com.evcharger.dashboard.entity.StationSiteDTO;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
+
 @Mapper
 public interface StationMapper extends BaseMapper<Station> {
 
@@ -83,5 +85,23 @@ IPage<StationSiteDTO> selectStationWithFilters(Page<?> page,
             "JOIN site si ON s.site_id = si.site_id " +
             "WHERE s.station_name = #{stationName}")
     StationDetailDTO getStationDetails(@Param("stationName") String stationName);
+
+    @Select("<script>" +
+            "SELECT s.station_name, si.coordinates_x, si.coordinates_y " +
+            "FROM station s " +
+            "JOIN site si ON s.site_id = si.site_id " +
+            "<if test='stationNames != null and stationNames.size() > 0'>" +
+            "WHERE s.station_name IN " +
+            "<foreach item='item' index='index' collection='stationNames' open='(' separator=',' close=')'>" +
+            "#{item}" +
+            "</foreach>" +
+            "</if>" +
+            "</script>")
+    @Results({
+            @Result(property = "stationName", column = "station_name"),
+            @Result(property = "coordinatesX", column = "coordinates_x"),
+            @Result(property = "coordinatesY", column = "coordinates_y")
+    })
+    List<StationLocation> getStationLocations(@Param("stationNames") List<String> stationNames);
 
 }

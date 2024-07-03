@@ -6,8 +6,10 @@ import com.evcharger.dashboard.entity.Connector;
 import com.evcharger.dashboard.entity.Station;
 import com.evcharger.dashboard.entity.StationDetailDTO;
 import com.evcharger.dashboard.entity.StationSiteDTO;
+import com.evcharger.dashboard.entity.dto.StationUsageDTO;
 import com.evcharger.dashboard.service.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -77,7 +79,11 @@ public IPage<StationSiteDTO> getFilteredStations(@RequestParam("page") int page,
         return stationService.getStationDetails(stationName);
     }
 
-
+    @GetMapping("/usage")
+    public ResponseEntity<List<StationUsageDTO>> getStationsUsage() {
+        List<StationUsageDTO> stationUsage = stationService.getStationsUsageWithLocation();
+        return ResponseEntity.ok(stationUsage);
+    }
 
 
 }

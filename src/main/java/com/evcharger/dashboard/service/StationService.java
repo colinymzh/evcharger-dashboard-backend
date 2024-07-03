@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.evcharger.dashboard.entity.Station;
 import com.evcharger.dashboard.entity.StationDetailDTO;
 import com.evcharger.dashboard.entity.StationSiteDTO;
+import com.evcharger.dashboard.entity.dto.StationUsageDTO;
+
+import java.util.List;
 
 public interface StationService extends IService<Station> {
 
@@ -16,4 +19,6 @@ public interface StationService extends IService<Station> {
     IPage<StationSiteDTO> getStationsWithFilters(Page<?> page, String stationName, String city, String postcode, Boolean supportsFastCharging);
 
     StationDetailDTO getStationDetails(String stationName);
+
+    List<StationUsageDTO> getStationsUsageWithLocation();
 }

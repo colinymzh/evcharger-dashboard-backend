@@ -43,13 +43,17 @@ public class AvailabilityController {
         return availabilityService.getWeeklyUsageByStationAndConnector(stationName);
     }
 
+    //城市、星期几、柱状图
     @GetMapping("/city/weekly-usage")
     public CityUsageResponseDTO getWeeklyUsageByCity(@RequestParam("stationName") String stationName) {
         return availabilityService.getWeeklyUsageByCity(stationName);
     }
 
+    //站点、每周、每小时、热力图
     @GetMapping("/station/weekly-hourly-usage")
     public List<ConnectorWeeklyHourlyUsageDTO> getWeeklyHourlyUsageByStationAndConnector(@RequestParam("stationName") String stationName) {
         return availabilityService.getWeeklyHourlyUsageByStationAndConnector(stationName);
     }
+
+
 }
