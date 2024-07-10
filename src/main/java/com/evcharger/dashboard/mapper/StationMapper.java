@@ -104,4 +104,6 @@ IPage<StationSiteDTO> selectStationWithFilters(Page<?> page,
     })
     List<StationLocation> getStationLocations(@Param("stationNames") List<String> stationNames);
 
+    @Select("SELECT site_id FROM station WHERE station_name = #{stationName}")
+    Integer getSiteIdByStationName(@Param("stationName") String stationName);
 }
