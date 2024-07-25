@@ -1,5 +1,7 @@
 package com.evcharger.dashboard.service;
 
+import java.util.List;
+
 public interface PredictionService {
-    String getWeatherPrediction(String stationName, String date, int dayOfWeek, int hour);
+    List<String> getWeatherPrediction(String stationName, String date, int dayOfWeek, int hour);
 }
