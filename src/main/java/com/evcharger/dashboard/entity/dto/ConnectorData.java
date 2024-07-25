@@ -28,4 +28,5 @@ public class ConnectorData {
     private double stationDensity10km;
     private double stationDensity1km;
     private double stationDensity20km;
+    private int cityId;
 }

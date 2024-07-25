@@ -88,7 +88,8 @@ public class PredictionServiceImpl implements PredictionService {
                         "--stationDensity20km", String.valueOf(connector.getStationDensity20km()),
                         "--dayOfWeek", String.valueOf(dayOfWeek),
                         "--hour", String.valueOf(hour),
-                        "--weather", weather
+                        "--weather", weather,
+                        "--cityId", String.valueOf(connector.getCityId())
                 );
 
                 pb.redirectErrorStream(true);
