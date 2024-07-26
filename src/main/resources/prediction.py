@@ -58,7 +58,7 @@ def main():
     ]
     
 # 定义绝对路径
-    base_directory = "/Users/yiming/code/evcharger-anomaly-detection"  # 请替换为实际的基础目录路径
+    base_directory = r"C:\Users\colin\code\evcharger-anomaly-detection"  # 请替换为实际的基础目录路径
     model_directory = os.path.join(base_directory, 'saved_models')
     model_filename = 'random_forest_model.joblib'
     model_path = os.path.join(model_directory, model_filename)
@@ -131,15 +131,9 @@ def main():
     class_labels = loaded_rf.classes_
 
     # 打印每个类别的概率
-    print("\n预测概率:")
+    print("\n Probability:")
     for label, prob in zip(class_labels, probabilities[0]):
-        print(f"类别 {label}: {prob:.4f}")
+        print(f"Class {label}: {prob:.4f}")
 
-    # 获取最可能的类别和其概率
-    most_likely_class = class_labels[np.argmax(probabilities)]
-    most_likely_prob = np.max(probabilities)
-
-    print(f"\n最可能的类别: {most_likely_class}")
-    print(f"该类别的概率: {most_likely_prob:.4f}")
 if __name__ == "__main__":
     main()
