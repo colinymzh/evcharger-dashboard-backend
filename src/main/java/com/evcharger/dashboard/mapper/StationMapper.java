@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.evcharger.dashboard.entity.Station;
-import com.evcharger.dashboard.entity.StationDetailDTO;
+import com.evcharger.dashboard.entity.dto.StationDetailDTO;
 import com.evcharger.dashboard.entity.StationLocation;
-import com.evcharger.dashboard.entity.StationSiteDTO;
+import com.evcharger.dashboard.entity.dto.StationSiteDTO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

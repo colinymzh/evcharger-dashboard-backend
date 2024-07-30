@@ -1,4 +1,4 @@
-package com.evcharger.dashboard.entity;
+package com.evcharger.dashboard.entity.dto;
 
 import lombok.Data;
 

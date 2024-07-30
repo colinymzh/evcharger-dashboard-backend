@@ -3,8 +3,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.evcharger.dashboard.entity.Station;
-import com.evcharger.dashboard.entity.StationDetailDTO;
-import com.evcharger.dashboard.entity.StationSiteDTO;
+import com.evcharger.dashboard.entity.dto.StationDetailDTO;
+import com.evcharger.dashboard.entity.dto.StationSiteDTO;
 import com.evcharger.dashboard.entity.dto.StationUsageDTO;
 
 import java.util.List;
