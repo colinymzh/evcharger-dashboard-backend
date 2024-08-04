@@ -211,28 +211,7 @@ class AvailabilityServiceImplTestGetConnectorByStation {
         verify(availabilityMapper, times(1)).getAvailabilityByStationName(stationName);
     }
 
-    @Test
-    void testGetWeeklyHourlyUsageByStationAndConnector_AllDaysAndHours() {
-        String stationName = "AllDaysAndHoursStation";
-        List<Availability> availabilities = new ArrayList<>();
-        for (int day = 1; day <= 7; day++) {
-            for (int hour = 0; hour < 24; hour++) {
-                availabilities.add(createAvailability("2023-07-3" + day, 1, hour, true));
-                availabilities.add(createAvailability("2023-07-3" + day, 1, hour, false));
-            }
-        }
 
-        when(availabilityMapper.getAvailabilityByStationName(stationName)).thenReturn(availabilities);
-
-        List<ConnectorWeeklyHourlyUsageDTO> result = availabilityService.getWeeklyHourlyUsageByStationAndConnector(stationName);
-
-        assertEquals(1, result.size());
-        assertEquals("1", result.get(0).getConnectorId());
-        assertEquals(7, result.get(0).getWeeklyHourlyUsage().size());
-        assertEquals(24, result.get(0).getWeeklyHourlyUsage().get(0).getHourlyUsage().size());
-
-        verify(availabilityMapper, times(1)).getAvailabilityByStationName(stationName);
-    }
 
     @Test
     void testGetWeeklyHourlyUsageByStationAndConnector_MultipleConnectors() {

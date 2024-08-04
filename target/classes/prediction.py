@@ -57,22 +57,22 @@ def main():
         'hour_sin', 'hour_cos', 'day_of_week_sin', 'day_of_week_cos'
     ]
     
-# 定义绝对路径
-    base_directory = r"C:\Users\colin\code\evcharger-anomaly-detection"  # 请替换为实际的基础目录路径
+# Define absolute paths
+    base_directory = r"C:\Users\colin\code\dissertation\evcharger-availability-prediction"  # 请替换为实际的基础目录路径
     model_directory = os.path.join(base_directory, 'saved_models')
     model_filename = 'random_forest_model.joblib'
     model_path = os.path.join(model_directory, model_filename)
     
-# 加载模型
+# Loading models
     loaded_rf = joblib.load(model_path)
 
    
     
-    # 处理循环特征
+    # Handle cyclic features
     hour_sin, hour_cos = encode_cyclical_features(args.hour, 24)
     day_of_week_sin, day_of_week_cos = encode_cyclical_features(args.dayOfWeek, 7)
 
-# 加载预先训练好的LabelEncoder
+# Load the pre-trained LabelEncoder
     station_encoder_path = os.path.join(base_directory, 'station_encoder.joblib')
     city_encoder_path = os.path.join(base_directory, 'city_encoder.joblib')
     station_encoder = joblib.load(station_encoder_path)
@@ -81,7 +81,7 @@ def main():
     station_name_encoded = station_encoder.transform([str(args.stationName)])[0]
     city_id_encoded = city_encoder.transform([str(args.cityId)])[0]
     
-    # 使用字典来创建特征
+    # Use dictionaries to create features
     features_dict = {
         'connector_id': args.connectorId,
         'coordinates_x': args.coordinatesX,
@@ -118,19 +118,19 @@ def main():
     for weather in weather_features:
         features_dict[f'weather_{weather}'] = 1 if args.weather == weather else 0
 
-    # 创建有序字典，按照模型期望的特征顺序排列
+    # Create ordered dictionaries, in the order of the features expected by the model
     ordered_features = {name: features_dict.get(name, 0) for name in expected_feature_names}
 
-    # 创建 DataFrame，确保列的顺序与模型期望的特征顺序一致
+    # Create the DataFrame, ensuring that the order of the columns matches the order of the features expected by the model
     features_df = pd.DataFrame([ordered_features], columns=expected_feature_names)
 
-    # 进行预测并获取概率值
+    # Make predictions and obtain probability values
     probabilities = loaded_rf.predict_proba(features_df)
     
-    # 获取类别标签
+    # Get category tags
     class_labels = loaded_rf.classes_
 
-    # 打印每个类别的概率
+    # Print the probability of each category
     print("\n Probability:")
     for label, prob in zip(class_labels, probabilities[0]):
         print(f"Class {label}: {prob:.4f}")
