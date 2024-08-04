@@ -10,4 +10,8 @@ public interface SiteService extends IService<Site> {
     //List<String> getAllUniqueCities();
 
     List<String> getAllUniqueCityIds();
+
+    List<String> getAllUniqueCityIds1();
+    boolean save(Site site);
+    Site getById(String id);
 }

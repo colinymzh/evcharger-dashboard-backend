@@ -36,10 +36,6 @@ public class StationServiceImpl extends ServiceImpl<StationMapper, Station> impl
         return baseMapper.selectStationWithSite(page);
     }
 
-//    @Override
-//    public IPage<StationSiteDTO> getStationsWithFilters(Page<?> page, String stationName, String city, String postcode, Boolean supportsFastCharging) {
-//        return baseMapper.selectStationWithFilters(page, stationName, city, postcode, supportsFastCharging);
-//    }
 
     /**
      * Retrieves a paginated list of stations filtered by various parameters.

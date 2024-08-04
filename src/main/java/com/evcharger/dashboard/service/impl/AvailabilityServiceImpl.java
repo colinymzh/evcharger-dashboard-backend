@@ -224,6 +224,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
     }
 
 
+
     // Retrieves weekly hourly usage statistics for a specific station and connector
     @Override
     public List<ConnectorWeeklyHourlyUsageDTO> getWeeklyHourlyUsageByStationAndConnector(String stationName) {
