@@ -24,22 +24,32 @@ public class PredictionServiceImpl implements PredictionService {
     @Autowired
     private PredictionInputMapper predictionInputMapper;
 
+    // API key for accessing weather data
     private static final String API_KEY = "404ae755d2b7cb225bad7f0098968ae2";
 
+    /**
+     * Gets weather prediction data and performs prediction using Python scripts.
+     *
+     * @param stationName The name of the charging station.
+     * @param date The target date for prediction.
+     * @param dayOfWeek The day of the week for the target date.
+     * @param hour The specific hour for prediction.
+     * @return A list of predictions obtained from the Python scripts.
+     */
     @Override
     public List<String> getWeatherPrediction(String stationName, String date, int dayOfWeek, int hour) {
-        // 获取connector信息
+        // Get connector information for the given station
         List<ConnectorData> connectors = predictionInputMapper.getConnectorsByStationName(stationName);
         List<String> predictions = new ArrayList<>();
 
-        // 获取坐标和日期差异
+        // Get coordinates and calculate the number of days between now and the target date
         SiteCoordinates coordinates = predictionInputMapper.getCoordinatesByStationName(stationName);
         double lat = coordinates.getCoordinatesX();
         double lon = coordinates.getCoordinatesY();
         LocalDate targetDate = LocalDate.parse(date);
         long cnt = ChronoUnit.DAYS.between(LocalDate.now(), targetDate);
 
-        // 调用天气API
+        // Call the weather API to get weather data
         RestTemplate restTemplate = new RestTemplate();
         String weatherApiUrl = String.format("https://api.openweathermap.org/data/2.5/forecast/daily?lat=%s&lon=%s&cnt=%d&appid=%s",
                 lat, lon, cnt, API_KEY);
@@ -58,9 +68,11 @@ public class PredictionServiceImpl implements PredictionService {
             e.printStackTrace();
         }
 
+        // For each connector, call the Python script with relevant parameters
         for (ConnectorData connector : connectors) {
-            // 调用Python脚本
+            // Calling Python scripts
             try {
+                // Prepare Python script command with arguments
                 ProcessBuilder pb = new ProcessBuilder("python", "src/main/resources/prediction.py",
                         "--stationName", connector.getStationName(),
                         "--connectorId", String.valueOf(connector.getConnectorId()),
@@ -92,6 +104,7 @@ public class PredictionServiceImpl implements PredictionService {
                         "--cityId", String.valueOf(connector.getCityId())
                 );
 
+                // Start the process and read its output
                 pb.redirectErrorStream(true);
                 Process process = pb.start();
                 try (BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()))) {

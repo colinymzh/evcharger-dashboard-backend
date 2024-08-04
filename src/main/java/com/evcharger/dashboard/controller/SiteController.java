@@ -20,25 +20,7 @@ public class SiteController {
     @Autowired
     private CityService cityService;
 
-    @GetMapping
-    public List<Site> getAllSites() {
-        return siteService.list();
-    }
 
-    @PostMapping
-    public boolean addSite(@RequestBody Site site) {
-        return siteService.save(site);
-    }
-
-    @PutMapping
-    public boolean updateSite(@RequestBody Site site) {
-        return siteService.updateById(site);
-    }
-
-    @DeleteMapping("/{id}")
-    public boolean deleteSite(@PathVariable("id") String id) {
-        return siteService.removeById(id);
-    }
 
 
     @GetMapping("/cities")

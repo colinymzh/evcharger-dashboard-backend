@@ -22,34 +22,34 @@ public class AvailabilityController {
         return availabilityService.getAvailabilityByStationAndDate(stationName, date);
     }
 
-    //时间点、使用率、折线图
+    //Point in time, utilisation rate, line graphs
     @GetMapping("/station/usage")
     public List<ConnectorUsageResponseDTO> getConnectorUsageByStationAndScope(@RequestParam("stationName") String stationName,
                                                                               @RequestParam("scope") int scope) {
         return availabilityService.getConnectorUsageByStationAndScope(stationName, scope);
     }
 
-    //时间段、使用率、折线图
+    // Time period, utilisation rate, line graphs
     @GetMapping("/station/usage/time-period")
     public List<ConnectorUsageResponseDTO> getConnectorUsageByTimePeriod(@RequestParam("stationName") String stationName,
                                                                          @RequestParam("scope") int scope) {
         return availabilityService.getConnectorUsageByTimePeriod(stationName, scope);
     }
 
-    //星期几、使用率、条形图
+    //Day of week, utilisation rate, bar charts
 
     @GetMapping("/station/weekly-usage")
     public List<ConnectorWeeklyUsageResponseDTO> getWeeklyUsageByStationAndConnector(@RequestParam("stationName") String stationName) {
         return availabilityService.getWeeklyUsageByStationAndConnector(stationName);
     }
 
-    //城市、星期几、柱状图
+    //city, day of the week, bar graphs
     @GetMapping("/city/weekly-usage")
     public CityUsageResponseDTO getWeeklyUsageByCity(@RequestParam("stationName") String stationName) {
         return availabilityService.getWeeklyUsageByCity(stationName);
     }
 
-    //站点、每周、每小时、热力图
+    //site, weekly, hourly, heat map
     @GetMapping("/station/weekly-hourly-usage")
     public List<ConnectorWeeklyHourlyUsageDTO> getWeeklyHourlyUsageByStationAndConnector(@RequestParam("stationName") String stationName) {
         return availabilityService.getWeeklyHourlyUsageByStationAndConnector(stationName);

@@ -15,23 +15,5 @@ public class ConnectorController {
     @Autowired
     private ConnectorService connectorService;
 
-    @GetMapping
-    public List<Connector> getAllConnectors() {
-        return connectorService.list();
-    }
 
-    @PostMapping
-    public boolean addConnector(@RequestBody Connector connector) {
-        return connectorService.save(connector);
-    }
-
-    @PutMapping
-    public boolean updateConnector(@RequestBody Connector connector) {
-        return connectorService.updateById(connector);
-    }
-
-    @DeleteMapping("/{id}")
-    public boolean deleteConnector(@PathVariable("id") String id) {
-        return connectorService.removeById(id);
-    }
 }

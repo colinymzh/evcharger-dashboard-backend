@@ -19,31 +19,7 @@ public interface StationMapper extends BaseMapper<Station> {
             "JOIN site si ON s.site_id = si.site_id")
     IPage<StationSiteDTO> selectStationWithSite(Page<?> page);
 
-//    @Select("<script>" +
-//            "SELECT s.station_name, si.city, si.street, si.postcode " +
-//            "FROM station s " +
-//            "JOIN site si ON s.site_id = si.site_id " +
-//            "JOIN connector c ON s.station_name = c.station_name " +
-//            "WHERE 1=1 " +
-//            "<if test='stationName != null and stationName != \"\"'> " +
-//            "AND s.station_name LIKE CONCAT('%', #{stationName}, '%') " +
-//            "</if> " +
-//            "<if test='city != null and city != \"\"'> " +
-//            "AND si.city LIKE CONCAT('%', #{city}, '%') " +
-//            "</if> " +
-//            "<if test='postcode != null and postcode != \"\"'> " +
-//            "AND si.postcode LIKE CONCAT('%', #{postcode}, '%') " +
-//            "</if> " +
-//            "<if test='supportsFastCharging != null'> " +
-//            "AND c.connector_type = 'Rapid' " +
-//            "</if> " +
-//            "GROUP BY s.station_name " +
-//            "</script>")
-//    IPage<StationSiteDTO> selectStationWithFilters(Page<?> page,
-//                                                   @Param("stationName") String stationName,
-//                                                   @Param("city") String city,
-//                                                   @Param("postcode") String postcode,
-//                                                   @Param("supportsFastCharging") Boolean supportsFastCharging);
+
 @Select("<script>" +
         "SELECT s.station_name, si.city_id, c.city_name, si.street, si.postcode " +
         "FROM station s " +
@@ -72,12 +48,6 @@ IPage<StationSiteDTO> selectStationWithFilters(Page<?> page,
                                                @Param("supportsFastCharging") Boolean supportsFastCharging);
 
 
-//    @Select("SELECT s.station_name, s.site_id, s.tariff_amount, s.tariff_description, s.tariff_connectionfee, " +
-//            "si.city, si.street, si.postcode " +
-//            "FROM station s " +
-//            "JOIN site si ON s.site_id = si.site_id " +
-//            "WHERE s.station_name = #{stationName}")
-//    StationDetailDTO getStationDetails(@Param("stationName") String stationName);
 
     @Select("SELECT s.station_name, s.site_id, s.tariff_amount, s.tariff_description, s.tariff_connectionfee, " +
             "si.city_id, si.street, si.postcode " +

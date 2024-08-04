@@ -18,20 +18,24 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
 
     @Autowired
     private AvailabilityMapper availabilityMapper;
+
+    // Retrieves availability data for a specific station and date
     @Override
     public List<Availability> getAvailabilityByStationAndDate(String stationName, String date) {
         return baseMapper.getAvailabilityByStationAndDate(stationName, date);
     }
 
-    //时间点、可用性、折线图
+     // Returns connector usage statistics by station and time scope
     @Override
     public List<ConnectorUsageResponseDTO> getConnectorUsageByStationAndScope(String stationName, int scope) {
+        // Fetch availability data
         List<Availability> availabilities = availabilityMapper.getAvailabilityByStationAndScope(stationName, scope);
+        // Group data by connector ID and hour
         Map<String, Map<Integer, List<Availability>>> groupedByConnectorAndHour = availabilities.stream()
                 .collect(Collectors.groupingBy(a -> String.valueOf(a.getConnectorId()), Collectors.groupingBy(Availability::getHour)));
 
         List<ConnectorUsageResponseDTO> response = new ArrayList<>();
-
+        // Calculate usage statistics for each connector and hour
         groupedByConnectorAndHour.forEach((connectorId, hourMap) -> {
             List<ConnectorUsageDTO> usageData = new ArrayList<>();
             hourMap.forEach((hour, records) -> {
@@ -42,6 +46,8 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
                 usageDTO.setAverageUsage(averageUsage);
                 usageData.add(usageDTO);
             });
+
+            // Prepare response DTO for each connector
             ConnectorUsageResponseDTO responseDTO = new ConnectorUsageResponseDTO();
             responseDTO.setConnectorId(connectorId);
             responseDTO.setUsageData(usageData);
@@ -51,15 +57,18 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
         return response;
     }
 
-    //时间段、可用性、折线图
+    // Retrieves connector usage statistics over a specific time period
     @Override
     public List<ConnectorUsageResponseDTO> getConnectorUsageByTimePeriod(String stationName, int scope) {
+        // Fetch availability data
         List<Availability> availabilities = availabilityMapper.getAvailabilityByStationAndScope(stationName, scope);
+        // Group data by connector ID and hour
         Map<String, Map<Integer, List<Availability>>> groupedByConnectorAndHour = availabilities.stream()
                 .collect(Collectors.groupingBy(a -> String.valueOf(a.getConnectorId()), Collectors.groupingBy(Availability::getHour)));
 
         List<ConnectorUsageResponseDTO> response = new ArrayList<>();
 
+        // Group data by time periods and calculate usage statistics
         groupedByConnectorAndHour.forEach((connectorId, hourMap) -> {
             Map<String, List<Availability>> groupedByTimePeriod = groupByTimePeriod(hourMap);
             List<TimePeriodUsageDTO> usageData = new ArrayList<>();
@@ -71,6 +80,8 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
                 usageDTO.setAverageUsage(averageUsage);
                 usageData.add(usageDTO);
             });
+
+            // Prepare response DTO for each connector
             ConnectorUsageResponseDTO responseDTO = new ConnectorUsageResponseDTO();
             responseDTO.setConnectorId(connectorId);
             responseDTO.setUsageData(usageData.stream().map(data -> {
@@ -85,6 +96,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
         return response;
     }
 
+    // Helper method to group availability data by time periods
     private Map<String, List<Availability>> groupByTimePeriod(Map<Integer, List<Availability>> hourMap) {
         Map<String, List<Availability>> groupedByTimePeriod = new HashMap<>();
         for (Map.Entry<Integer, List<Availability>> entry : hourMap.entrySet()) {
@@ -95,6 +107,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
         return groupedByTimePeriod;
     }
 
+    // Helper method to determine time periods based on hour
     private String getTimePeriod(int hour) {
         if (hour >= 0 && hour <= 6) {
             return "0-6";
@@ -109,17 +122,20 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
         }
     }
 
-
+    // Retrieves weekly usage statistics by station and connector
     @Override
     public List<ConnectorWeeklyUsageResponseDTO> getWeeklyUsageByStationAndConnector(String stationName) {
+        // Fetch availability data
         List<Availability> availabilities = availabilityMapper.getAvailabilityByStationName(stationName);
 
+        // Group data by connector ID and day of the week
         Map<String, Map<DayOfWeek, List<Availability>>> groupedByConnectorAndDayOfWeek = availabilities.stream()
                 .collect(Collectors.groupingBy(a -> String.valueOf(a.getConnectorId()),
                         Collectors.groupingBy(a -> LocalDate.parse(a.getDate()).getDayOfWeek())));
 
         List<ConnectorWeeklyUsageResponseDTO> response = new ArrayList<>();
 
+        // Calculate weekly usage statistics for each connector
         groupedByConnectorAndDayOfWeek.forEach((connectorId, dayOfWeekMap) -> {
             List<WeeklyUsageDTO> weeklyUsage = new ArrayList<>();
             dayOfWeekMap.forEach((dayOfWeek, records) -> {
@@ -131,6 +147,8 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
                 usageDTO.setAverageUsage(averageUsage);
                 weeklyUsage.add(usageDTO);
             });
+
+            // Prepare response DTO for each connector
             ConnectorWeeklyUsageResponseDTO responseDTO = new ConnectorWeeklyUsageResponseDTO();
             responseDTO.setConnectorId(connectorId);
             responseDTO.setWeeklyUsage(weeklyUsage.stream()
@@ -142,6 +160,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
         return response;
     }
 
+    // Helper method to determine the order of days of the week
     private int getDayOfWeekOrder(WeeklyUsageDTO dto) {
         switch (dto.getDayOfWeek()) {
             case "MONDAY": return 1;
@@ -155,18 +174,21 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
         }
     }
 
-    //星期、城市、柱状图
+    // Retrieves weekly usage statistics by city
     @Override
     public CityUsageResponseDTO getWeeklyUsageByCity(String stationName) {
+        // Fetch city ID and availability data
         Integer cityId = availabilityMapper.getCityIdByStationName(stationName);
         List<Availability> availabilities = availabilityMapper.getAvailabilityByCityId(cityId);
         String cityName = availabilityMapper.getCityNameByCityId(cityId);
 
+        // Group data by day of the week
         Map<DayOfWeek, List<Availability>> groupedByDayOfWeek = availabilities.stream()
                 .collect(Collectors.groupingBy(a -> LocalDate.parse(a.getDate()).getDayOfWeek()));
 
         List<WeeklyCityUsageDTO> weeklyUsage = new ArrayList<>();
 
+        // Calculate weekly usage statistics for the city
         groupedByDayOfWeek.forEach((dayOfWeek, records) -> {
             long totalCount = records.size();
             long unavailableCount = records.stream().filter(a -> !a.getIsAvailable()).count();
@@ -177,6 +199,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
             weeklyUsage.add(usageDTO);
         });
 
+        // Prepare response DTO for the city
         CityUsageResponseDTO responseDTO = new CityUsageResponseDTO();
         responseDTO.setCityName(cityName);
         responseDTO.setWeeklyUsage(weeklyUsage.stream()
@@ -186,6 +209,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
         return responseDTO;
     }
 
+    // Helper method to determine the order of days of the week for city usage
     private int getDayOfWeekOrder(WeeklyCityUsageDTO dto) {
         switch (dto.getDayOfWeek()) {
             case "MONDAY": return 1;
@@ -200,11 +224,13 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
     }
 
 
-    //时间点、星期数、热度图
+    // Retrieves weekly hourly usage statistics for a specific station and connector
     @Override
     public List<ConnectorWeeklyHourlyUsageDTO> getWeeklyHourlyUsageByStationAndConnector(String stationName) {
+        // Fetch availability data
         List<Availability> availabilities = availabilityMapper.getAvailabilityByStationName(stationName);
 
+        // Group data by connector ID, day of the week, and hour
         Map<String, Map<DayOfWeek, Map<Integer, List<Availability>>>> groupedByConnectorAndDayOfWeekAndHour = availabilities.stream()
                 .collect(Collectors.groupingBy(
                         a -> String.valueOf(a.getConnectorId()),
@@ -216,6 +242,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
 
         List<ConnectorWeeklyHourlyUsageDTO> response = new ArrayList<>();
 
+        // Calculate hourly usage statistics for each connector and day
         groupedByConnectorAndDayOfWeekAndHour.forEach((connectorId, dayOfWeekMap) -> {
             List<WeeklyHourlyUsageDTO> weeklyHourlyUsageList = new ArrayList<>();
             dayOfWeekMap.forEach((dayOfWeek, hourMap) -> {
@@ -229,6 +256,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
                     hourlyUsageDTO.setAverageUsage(averageUsage);
                     hourlyUsageList.add(hourlyUsageDTO);
                 });
+                // Prepare weekly hourly usage DTO for each day
                 WeeklyHourlyUsageDTO weeklyHourlyUsageDTO = new WeeklyHourlyUsageDTO();
                 weeklyHourlyUsageDTO.setDayOfWeek(dayOfWeek.toString());
                 weeklyHourlyUsageDTO.setHourlyUsage(hourlyUsageList.stream()
@@ -236,6 +264,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
                         .collect(Collectors.toList()));
                 weeklyHourlyUsageList.add(weeklyHourlyUsageDTO);
             });
+            // Prepare response DTO for each connector
             ConnectorWeeklyHourlyUsageDTO responseDTO = new ConnectorWeeklyHourlyUsageDTO();
             responseDTO.setConnectorId(connectorId);
             responseDTO.setWeeklyHourlyUsage(weeklyHourlyUsageList.stream()
@@ -246,7 +275,7 @@ public class AvailabilityServiceImpl extends ServiceImpl<AvailabilityMapper, Ava
 
         return response;
     }
-
+    // Helper method to determine the order of days of the week for hourly usage
     private int getDayOfWeekOrder(WeeklyHourlyUsageDTO dto) {
         switch (dto.getDayOfWeek()) {
             case "MONDAY": return 1;

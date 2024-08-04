@@ -9,12 +9,12 @@ import java.util.List;
 public interface AvailabilityService extends IService<Availability> {
     List<Availability> getAvailabilityByStationAndDate(String stationName, String date);
 
-    //时间点、可用性图
+    //Point in Time, Availability Maps
     List<ConnectorUsageResponseDTO> getConnectorUsageByStationAndScope(String stationName, int scope);
-    //时间点、可用性图
+    //Point in Time, Availability Maps
     List<ConnectorUsageResponseDTO> getConnectorUsageByTimePeriod(String stationName, int scope);
 
-    //星期几、可用性图
+    // Days of the week, availability charts
     List<ConnectorWeeklyUsageResponseDTO> getWeeklyUsageByStationAndConnector(String stationName);
 
     CityUsageResponseDTO getWeeklyUsageByCity(String stationName);

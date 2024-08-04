@@ -14,4 +14,7 @@ public class Availability {
     private Integer hour;
     private Boolean isAvailable;
     private String cityId;
+
+    public Availability(String stationName, int i, String date, int i1, boolean b, String city1) {
+    }
 }

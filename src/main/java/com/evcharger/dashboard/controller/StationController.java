@@ -21,30 +21,7 @@ public class StationController {
     @Autowired
     private StationService stationService;
 
-    @GetMapping
-    public List<Station> getAllStations() {
-        return stationService.list();
-    }
 
-    @PostMapping
-    public boolean addStation(@RequestBody Station station) {
-        return stationService.save(station);
-    }
-
-    @PutMapping
-    public boolean updateStation(@RequestBody Station station) {
-        return stationService.updateById(station);
-    }
-
-    @DeleteMapping("/{id}")
-    public boolean deleteStation(@PathVariable("id") String id) {
-        return stationService.removeById(id);
-    }
-
-    @GetMapping("/hello")
-    public String getAllConnectors() {
-        return "ok了家人们";
-    }
     @GetMapping("/homepage")
     public IPage<StationSiteDTO> getPagedStations(@RequestParam("page") int page,
                                                   @RequestParam("size") int size) {
@@ -52,16 +29,7 @@ public class StationController {
         return stationService.getStationsWithSite(pagination);
     }
 
-//    @GetMapping("/filtered")
-//    public IPage<StationSiteDTO> getFilteredStations(@RequestParam("page") int page,
-//                                                     @RequestParam("size") int size,
-//                                                     @RequestParam(value = "stationName", required = false) String stationName,
-//                                                     @RequestParam(value = "city", required = false) String city,
-//                                                     @RequestParam(value = "postcode", required = false) String postcode,
-//                                                     @RequestParam(value = "supportsFastCharging", required = false) Boolean supportsFastCharging) {
-//        Page<StationSiteDTO> pagination = new Page<>(page, size);
-//        return stationService.getStationsWithFilters(pagination, stationName, city, postcode, supportsFastCharging);
-//    }
+
 @GetMapping("/filtered")
 public IPage<StationSiteDTO> getFilteredStations(@RequestParam("page") int page,
                                                  @RequestParam("size") int size,
