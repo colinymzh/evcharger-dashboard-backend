@@ -58,7 +58,7 @@ def main():
     ]
     
 # 定义绝对路径
-    base_directory = r"C:\Users\colin\code\evcharger-anomaly-detection"  # 请替换为实际的基础目录路径
+    base_directory = r"C:\Users\colin\code\dissertation\evcharger-availability-prediction"  # 请替换为实际的基础目录路径
     model_directory = os.path.join(base_directory, 'saved_models')
     model_filename = 'random_forest_model.joblib'
     model_path = os.path.join(model_directory, model_filename)
